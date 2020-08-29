@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'irish/css/bootstrap2.min.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/font-awesome.min2.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/index.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/w3pro-4.css' %}">
+	<script src="{% static 'irish/js/jquery.min.js' %}"></script>
+	<script src="{% static 'irish/js/bootstrap2.min.js' %}"></script>
+	<title>Irish</title>
+</head>
+<body>
+	<div class="header" style="background-image:url({% static 'irish/images/bg_6.jpg' %});">
+		<nav class="navbar navbar-default" style="background:transparent; border:none; color:black;">
+		  <div class="container-fluid">
+			<div class="navbar-header">
+			  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" style="background-color:#000000;">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  <a class="navbar-brand" href="{%url 'irish:index' %}">I-rish</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+
+			  <ul class="nav navbar-nav navbar-right">
+				<li><a href="{%url 'irish:index' %}">Home</a></li>
+				<li><a href="{%url 'irish:cart' %}"><span class="fa fa-shopping-cart"></span> [<span id="cart">{{cart}}</span>]</a></li>
+			  	{% if request.user.is_authenticated %}
+			  	<li><a href="{%url 'irish:logout' %}">{{request.user}}</a></li>
+				<li><a href="{%url 'irish:register' %}"><span class="fa fa-user"></span> Sign Up</a></li>
+			  	{% else %}
+				<li><a href="{%url 'irish:register' %}"><span class="fa fa-user"></span> Sign Up</a></li>
+				<li><a href="{%url 'irish:login' %}"><span class="fa fa-sign-in"></span> Login</a></li>
+			  	{% endif %}
+			  </ul>
+			</div>
+		  </div>
+		</nav>
+
+		<h1 class="text-center">Home Page</h1>
+	</div>
+	<h3 class="text-center">Products</h3>
+	<div class="container-fluid">
+		<div class="row">
+			{% for product in products %}
+			<div class="col-sm-3" style="margin:30px 0 10px">
+				<div class="w3-card">
+					<a href="{%url 'irish:single' product.pk %}"><img src="{{product.image.url}}" alt="I-rish" height="300" width="100%"></a>
+					<div class="det">
+						<h3 id="name">{{product.name}}</h3>
+						<p>$<span id="price">{{product.price}}</span></p>
+						<center>
+							<button class="but btn btn-md btn-warning">Add to Cart <span class="fa fa-cart-plus"></span></button>
+							<button class="but1 btn btn-md btn-warning">Buy Now <span class="fa fa-shopping-bag"></span></button>
+						</center>
+						<p style="display:none">{{product.pk}}</p>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class=" container-fluid footer">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+					Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | I-rish.
+				</p>
+			</div>
+        </div>
+	</div>
+</body>
+<script>
+	$(document).ready(function(){
+		$(".but").click(function(){
+			var pid = $(this).parent().next().html();
+			var price = $(this).parent().prev().find("#price").html();
+			var name = $(this).parent().prev().prev().html();
+			var cart = '{{ pet }}';
+			var csr = '{{ csrf_token }}';
+			$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, price:price, pid:pid, csrfmiddlewaretoken:csr }, function(data){
+				$('#cart').html(data);
+				alert(data);
+			});
+		});
+		$(".but1").click(function(){
+			var pid = $(this).parent().next().html();
+			var price = $(this).parent().prev().find("#price").html();
+			var name = $(this).parent().prev().prev().html();
+			var cart = '{{pet}}';
+			var csr = '{{ csrf_token }}';
+			$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, price:price, pid:pid, csrfmiddlewaretoken:csr }, function(data){
+				location.assign("{% url 'irish:cart' %}");
+			});
+	  });
+	});
+  </script>
+</html>

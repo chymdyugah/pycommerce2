@@ -1,0 +1,31 @@
+body{
+	font-family:'Times New Roman', Times, serif;
+}
+
+.header{
+	width:100%;
+	height:500px;
+	background-size:cover;
+	background-repeat:no-repeat;
+	margin-bottom: 30px;
+}
+
+.footer{
+	background-color:black;
+	color:white;
+	margin-top:10px;
+	padding:10px 0;
+}
+
+thead tr{
+    background-color:#ffcc66;
+    color:white;
+}
+
+.bread li{
+	display:inline;
+}
+
+.det{
+	padding:0 10px 10px;
+}
