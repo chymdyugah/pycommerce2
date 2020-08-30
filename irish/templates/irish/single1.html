@@ -28,7 +28,7 @@
 
 			  <ul class="nav navbar-nav navbar-right">
 				<li><a href="{%url 'irish:index' %}">Home</a></li>
-				<li><a href="{%url 'irish:cart' %}"><span class="fa fa-shopping-cart"></span> [{{cart}}]</a></li>
+				  <li><a href="{%url 'irish:cart' %}"><span class="fa fa-shopping-cart"></span> [<span id="cart">{{cart}}</span>]</a></li>
 				<li><a href="#"><span class="fa fa-user"></span> Sign Up</a></li>
 				<li><a href="{%url 'irish:login' %}"><span class="fa fa-sign-in"></span> Login</a></li>
 			  </ul>
@@ -50,10 +50,13 @@
 			<div class="col-sm-7">
 				<div style="padding-top:20px;">
 					<h1>{{product.name}}</h1>
-					<h3>{{product.price}}</h3>
+					<h3 class="price">{{product.price}}</h3>
 					<p>{{product.description}}</p>
-					<button class="but btn btn-lg btn-warning">Add to Cart <span class="fa fa-cart-plus"></span></button>
-					<button class="but1 btn btn-lg btn-warning">Buy Now <span class="fa fa-shopping-bag"></span></button>
+					<div>
+						<button class="but btn btn-lg btn-warning">Add to Cart <span class="fa fa-cart-plus"></span></button>
+						<button class="but1 btn btn-lg btn-warning">Buy Now <span class="fa fa-shopping-bag"></span></button>
+					</div>
+					<p>{{product.pk}}</p>
 				</div>
 
 			</div>
@@ -69,5 +72,29 @@
         </div>
 	</div>
 </body>
+  <script>
+		$(document).ready(function(){
+		    $(".but").click(function(){
+				var pid = $(this).parent().next().html();
+				var price = $('.price').html();
+				var name = $('.price').prev().html();
+				var cart = '{{pet}}';
+				var csr = '{{csrf_token}}';
+				$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, pid:pid, price:price, csrfmiddlewaretoken:csr}, function(data){
+					$('#cart').html(data);
+				})
+			});
 
+			$(".but1").click(function(){
+				var pid = $(this).parent().next().html();
+				var price = $('.price').html();
+				var name = $('.price').prev().html();
+				var cart = '{{pet}}';
+				var csr = '{{csrf_token}}';
+				$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, pid:pid, price:price, csrfmiddlewaretoken:csr}, function(data){
+					location.assign("{% url 'irish:cart' %}");
+				})
+			});
+		});
+  </script>
 </html>

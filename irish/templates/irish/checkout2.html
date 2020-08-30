@@ -130,14 +130,14 @@
 	function payWithPaystack(){
 		var handler = PaystackPop.setup({
 			key: "pk_test_6b44fd2bf2c45c1f677ec8b8463a5ecd8fcf0421",
-			email: $("#email").val(),
+			email: '{{ request.user.email }}',
 			amount: $("#tp").html() * 100,
 			currency: "NGN",
-			firstname: $("#first-name").val(),
-			lastname: $("#last-name").val(),
+			firstname: '{{ request.user.first_name }}',
+			lastname: '{{ request.user.last_name }}',
 			callback: function(response){
 				var reference = response.reference;
-				var mail = $("#email").val();
+				var mail = '{{ request.user.email }}';
 				var add = $("#address").val();
 				var csr = '{{csrf_token}}';
 				var cart = '{{pet}}';
