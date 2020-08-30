@@ -144,23 +144,7 @@
 							<form id="paymentForm" class="billing-form" method="post">
 								<div class="form-group">
 									<div class="col-md-12">
-										<input id="email" type="email" name="email" class="form-control" placeholder="Email" required>
-										<input id="amount" type="hidden" name="amount" class="form-control" value="<?php echo($r['subtotal']+500) ?>" required>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-md-12">
-									   <input id="first-name" type="text" name="first-name" placeholder="First Name" class="form-control" required>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-md-12">
-									   <input id="last-name" type="text" name="last-name" class="form-control" placeholder="Last Name" required>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-md-12">
-									   <textarea id="address" name="address" class="form-control" placeholder="Address" required></textarea>
+									   <textarea id="address" name="address" class="form-control" placeholder="Delivery Address" required></textarea>
 									</div>
 								</div>
 								<div class="form-group">
@@ -357,14 +341,14 @@
 	function payWithPaystack(){
 		var handler = PaystackPop.setup({
 			key: "pk_test_6b44fd2bf2c45c1f677ec8b8463a5ecd8fcf0421",
-			email: $("#email").val(),
+			email: '{{ request.user.email }}',
 			amount: $("#tp").html() * 100,
 			currency: "NGN",
-			firstname: $("#first-name").val(),
-			lastname: $("#last-name").val(),
+			firstname: '{{ request.user.first_name }}',
+			lastname: '{{ request.user.last_name }}',
 			callback: function(response){
 				var reference = response.reference;
-				var mail = $("#email").val();
+				var mail = '{{ request.user.email }}';
 				var add = $("#address").val();
 				var csr = '{{csrf_token}}';
 				$.post("{% url 'irish:ajx' %}", {up:'response', cart:cart, order:response.reference, address:add, items:desc, email:mail, csrfmiddlewaretoken:csr}, function(data){
