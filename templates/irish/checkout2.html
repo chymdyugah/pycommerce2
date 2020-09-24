@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'irish/css/bootstrap2.min.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/font-awesome.min2.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/index.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/w3pro-4.css' %}">
+	<script src="{% static 'irish/js/jquery.min.js' %}"></script>
+	<script src="{% static 'irish/js/bootstrap2.min.js' %}"></script>
+	<title>Irish</title>
+</head>
+<body>
+	<div class="header" style="background-image:url({% static 'irish/images/bg_6.jpg' %});">
+		<nav class="navbar navbar-default" style="background:transparent; border:none; color:black;">
+		  <div class="container-fluid">
+		  	<ul class="nav navbar-nav pull-right">
+				<li><a href="{%url 'irish:cart' %}"><span class="fa fa-shopping-cart"></span> [{{cart}}]</a></li>
+			</ul>
+			<div class="navbar-header">
+			  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" style="background-color:#000000;">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  <a class="navbar-brand" href="{%url 'irish:index' %}">I-rish</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+
+			  <ul class="nav navbar-nav navbar-right">
+				<li><a href="{%url 'irish:index' %}">Home</a></li>
+			  	{% if request.user.is_authenticated %}
+			  	<li><a href="{%url 'irish:logout' %}">{{request.user.username.title}}</a></li>
+				<li><a href="{%url 'irish:register' %}"><span class="fa fa-user"></span> Sign Up</a></li>
+			  	{% else %}
+				<li><a href="{%url 'irish:register' %}"><span class="fa fa-user"></span> Sign Up</a></li>
+				<li><a href="{%url 'irish:login' %}"><span class="fa fa-sign-in"></span> Login</a></li>
+			  	{% endif %}
+			  </ul>
+			</div>
+		  </div>
+		</nav>
+
+		<h1 class="text-center">My Checkout</h1>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-5">
+				<div style="border:1px solid black; padding:10px; margin-bottom:10px;">
+					<h2 style="margin-bottom:30px;">CART TOTALS</h2>
+					<div class="row">
+						<div class="col-xs-6">
+							<p>Subtotal</p>
+							<p>Discount</p>
+							<br>
+							<p>Total</p>
+						</div>
+
+						<div class="col-xs-6">
+							<p>$<span class="dim subtotal">{{subtotal}}</span></p>
+							<p>$<span class="dim">-500</span></p>
+							<br>
+							<p>$<span id="tp"></span></p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-offset-2 col-sm-5">
+				<div style="border:1px solid black; padding:10px; margin-bottom:10px;">
+					<h3>Payment</h3>
+					<!-- form to select the payment portal to use -->
+					<p style="font-style:italic; font-size:10px;">N/B: Please after completing payment, always wait for the success feedback. Copy the order ID for future purposes.</p>
+					<form id="paymentForm">
+						<div class="form-group">
+							<textarea id="address" name="address" rows="1" class="form-control" placeholder="Address" required></textarea>
+						</div>
+						<div class="form-group">
+						   <button type="button" id="paymentButton" onClick="payWithPaystack()" class="btn btn-warning">
+								Pay&nbsp;&nbsp;<small>>></small>
+							</button>
+						</div>
+					</form>
+					<script src="https://js.paystack.co/v1/inline.js"></script>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid footer">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+					Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | I-rish.
+				</p>
+			</div>
+        </div>
+	</div>
+</body>
+</html>
+<script>
+	$(document).ready(function(){
+		var k = 0;
+		$(".dim").each(function(){
+			k += parseInt($(this).html());
+		});
+		$("#tp").html(k);
+
+	});
+</script>
+  </body>
+</html>
+
+<script>
+	//desc holds the products and their quantities as a string.
+	var desc = '{{final}}';
+</script>
+<script>
+	// code for paystack
+	var paymentForm = document.getElementById("paymentForm");
+	var paymentButton = document.getElementById("paymentButton");
+	//paymentButton.addEventListener("click", payWithPaystack, false);
+	function payWithPaystack(){
+		var handler = PaystackPop.setup({
+			key: "pk_test_6b44fd2bf2c45c1f677ec8b8463a5ecd8fcf0421",
+			email: '{{ request.user.email }}',
+			amount: $("#tp").html() * 100,
+			currency: "NGN",
+			firstname: '{{ request.user.first_name }}',
+			lastname: '{{ request.user.last_name }}',
+			callback: function(response){
+				var reference = response.reference;
+				var mail = '{{ request.user.email }}';
+				var add = $("#address").val();
+				var csr = '{{csrf_token}}';
+				var cart = '{{pet}}';
+				$.post("{% url 'irish:ajx' %}", {up:'response', cart:cart, order:response.reference, address:add, items:desc, email:mail, csrfmiddlewaretoken:csr }, function(data){
+					alert("Payment complete! order ID: " + response.reference + "\nCopy your order ID as it would be used for tracking your shipment.");
+					location.assign("{% url 'irish:index' %}");
+				});
+			},
+			onClose: function(){
+				alert("Transaction was not completed, Window close.");
+			},
+		});
+		handler.openIframe();
+	}
+</script>

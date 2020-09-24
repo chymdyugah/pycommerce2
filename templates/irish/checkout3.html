@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>I-rish</title>
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'irish/css/bootstrap3.min.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/edit.css' %}">
+	<script src="{% static 'irish/js/jquery.min.js' %}"></script>
+	<script src="{% static 'irish/js/bootstrap2.min.js' %}"></script>
+</head>
+<body >
+
+<div class="topnav" id="myTopnav">
+  <a href="{% url 'irish:index' %}" >Home <span class="glyphicon glyphicon-home"></span></a>
+  <a href="{% url 'irish:cart' %}">Cart <span class="glyphicon glyphicon-shopping-cart"></span><sup class="cart">{{cart}}</sup></a>
+ {% if request.user.is_authenticated %}
+  <a href="{% url 'irish:register' %}">Sign Up <span class="glyphicon glyphicon-ok-sign"></span></a>
+  <a href="{% url 'irish:logout' %}">{{request.user.username.title}} <span class="glyphicon glyphicon-user"></span></a>
+  {% else %}
+  <a href="{% url 'irish:register' %}">Sign Up <span class="glyphicon glyphicon-ok-sign"></span></a>
+  <a href="{% url 'irish:login' %}">Login <span class="glyphicon glyphicon-user"></span></a>
+  {% endif %}
+  <a href="{% url 'irish:cart' %}" id="hid" class="icon"><span class="glyphicon glyphicon-shopping-cart"></span><sup class="cart">{{cart}}</sup></a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="glyphicon glyphicon-menu-hamburger"></i>
+  </a>
+</div>
+
+<div class="background-picture-2">
+
+<div class="back-button-2">
+
+
+     <button class="button-back-2">Checkout <span class="glyphicon glyphicon-user"></span></button>
+  </div>
+
+
+</div>
+<br>
+ <div class="ro">
+ <div class="col-md-4"></div>
+
+<div class="col-md-4 login-form" >
+	  <form>
+       <br>
+	  	  <textarea class="form-control login-input" id="address" placeholder="Delivery Address" rows="5"></textarea><br>
+		  <button name="sub" type="button" onclick="payWithPaystack()"  class="btn btn-info login-btn btn-block">Pay <del>N</del>{{subtotal}}</button><br>
+    </form>
+	<script src="https://js.paystack.co/v1/inline.js"></script>
+	</div>
+	<div class="col-md-4"></div>
+	</div>
+
+	<br><br><br><br><br>
+<script>
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+  $("#hid").toggleClass(" hidden");
+}
+</script>
+<script>
+	//desc holds the products and their quantities as a string.
+	var desc = '{{final}}';
+</script>
+<script>
+	// code for paystack
+	function payWithPaystack(){
+		var handler = PaystackPop.setup({
+			key: "pk_test_6b44fd2bf2c45c1f677ec8b8463a5ecd8fcf0421",
+			email: '{{ request.user.email }}',
+			amount: {{subtotal}} * 100,
+			currency: "NGN",
+			firstname: '{{ request.user.first_name }}',
+			lastname: '{{ request.user.last_name }}',
+			callback: function(response){
+				var reference = response.reference;
+				var mail = '{{ request.user.email }}';
+				var add = $("#address").val();
+				var csr = '{{csrf_token}}';
+				var cart = '{{pet}}';
+				$.post("{% url 'irish:ajx' %}", {up:'response', cart:cart, order:response.reference, address:add, items:desc, email:mail, csrfmiddlewaretoken:csr }, function(data){
+					alert("Payment complete! order ID: " + response.reference);
+					location.assign("{% url 'irish:index' %}");
+				});
+			},
+			onClose: function(){
+				alert("Transaction was not completed, Window close.");
+			},
+		});
+		handler.openIframe();
+	}
+</script>
+
+
+
+</body>
+</html>

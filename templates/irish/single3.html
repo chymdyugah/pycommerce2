@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>I-rish</title>
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'irish/css/bootstrap3.min.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/edit.css' %}">
+	<script src="{% static 'irish/js/jquery.min.js' %}"></script>
+	<script src="{% static 'irish/js/bootstrap2.min.js' %}"></script>
+</head>
+<body onload="typeWriter()">
+
+<div class="topnav" id="myTopnav">
+  <a href="{% url 'irish:index' %}" class="active">Home <span class="glyphicon glyphicon-home"></span></a>
+  <a href="{% url 'irish:cart' %}">Cart <span class="glyphicon glyphicon-shopping-cart"></span><sup class="cart">{{cart}}</sup></a>
+  {% if request.user.is_authenticated %}
+  <a href="{% url 'irish:register' %}">Sign Up <span class="glyphicon glyphicon-ok-sign"></span></a>
+  <a href="{% url 'irish:logout' %}">{{request.user.username.title}} <span class="glyphicon glyphicon-user"></span></a>
+  {% else %}
+  <a href="{% url 'irish:register' %}">Sign Up <span class="glyphicon glyphicon-ok-sign"></span></a>
+  <a href="{% url 'irish:login' %}">Login <span class="glyphicon glyphicon-user"></span></a>
+  {% endif %}
+
+  <a href="#" class="icon"><span class="glyphicon glyphicon-shopping-cart"></span><sup class="cart">{{cart}}</sup></a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+	  <i class="glyphicon glyphicon-menu-hamburger"></i>
+  </a>
+</div>
+<div class="background-picture">
+	<div class="back-button">
+		<h3 id="typeme"></h3><br>
+		 <button class="button-back">Tomatoes Shop <span class="glyphicon glyphicon-shopping-cart"></span></button>
+	</div>
+</div>
+<br>
+<div class="container">
+	<div class="col-sm-6">
+		<img src="{{product.image.url}}" alt="I-rish" height="300" width="100%">
+	</div>
+	<div class="col-sm-6">
+		<h1>{{product.name}}</h1>
+		<h2><del>N</del><span class="price">{{product.price}}</span></h2>
+		<p>{{product.description}}</p>
+		<div>
+			<button class="but btn btn-lg btn-danger">Add to Cart <span class="glyphicon glyphicon-shopping-cart"></span></button>
+		</div>
+		<p style="display:none;">{{product.pk}}</p>
+	</div>
+
+</div>
+<br><br><br>
+<!-- sticky cart -->
+  <a href="{% url 'irish:cart' %}"  class="stickycart" ><span class="glyphicon glyphicon-shopping-cart carty"></span><sup style="font-size:25px;" class="cart-count cart">{{cart}}</sup></a>
+<!-- sticky cart ends here -->
+
+
+
+<script>
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+</script>
+
+<script>
+var i = 0;
+var txt = 'Welcome to our tomatoes shop';
+var speed = 200;
+
+function typeWriter() {
+  if (i < txt.length) {
+    document.getElementById("typeme").innerHTML += txt.charAt(i);
+    i++;
+    setTimeout(typeWriter, speed);
+  }
+}
+</script>
+<script>
+	$(".but").click(function(){
+		var pid = $(this).parent().next().html();
+		var price = $('.price').html();
+		var name = $('.price').parent().prev().html();
+		var cart = '{{pet}}';
+		var csr = '{{csrf_token}}';
+		$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, pid:pid, price:price, csrfmiddlewaretoken:csr}, function(data){
+			$('.cart').html(data);
+		})
+	});
+</script>
+
+</body>
+</html>

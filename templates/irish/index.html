@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>I-rish</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	  {% load staticfiles %}
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'irish/css/open-iconic-bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'irish/css/animate.css' %}">
+
+    <link rel="stylesheet" href="{% static 'irish/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'irish/css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'irish/css/magnific-popup.css' %}">
+
+    <link rel="stylesheet" href="{% static 'irish/css/aos.css' %}">
+
+    <link rel="stylesheet" href="{% static 'irish/css/ionicons.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'irish/css/bootstrap-datepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'irish/css/jquery.timepicker.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'irish/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'irish/css/icomoon.css' %}">
+    <link rel="stylesheet" href="{% static 'irish/css/style.css' %}">
+  </head>
+  <body class="goto-here">
+		<div class="py-1 bg-black">
+    	<div class="container">
+    		<div class="row no-gutters d-flex align-items-start align-items-center px-md-0">
+	    		<div class="col-lg-12 d-block">
+		    		<div class="row d-flex">
+		    			<div class="col-md pr-4 d-flex topper align-items-center">
+					    	<div class="icon mr-2 d-flex justify-content-center align-items-center"><span class="icon-phone2"></span></div>
+						    <span class="text">+ 234 (0)816 438 3680</span>
+					    </div>
+					    <div class="col-md pr-4 d-flex topper align-items-center">
+					    	<div class="icon mr-2 d-flex justify-content-center align-items-center"><span class="icon-paper-plane"></span></div>
+						    <span class="text">ugahchymdy@gmail.com</span>
+					    </div>
+					    <div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
+						    <span class="text">7-14 Business days delivery &amp; Free Returns</span>
+					    </div>
+				    </div>
+			    </div>
+		    </div>
+		  </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+	      <a class="navbar-brand" href="{% url 'irish:index' %}">I-rish</a>
+		  <a class="navbar-toggler" href="{% url 'irish:cart' %}" aria-expanded="false">
+			  <span class="icon-shopping_cart"></span> [<span class="cart">{{cart}}</span>]
+	      </a>
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="oi oi-menu"></span>
+	      </button>
+
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+
+	        <ul class="navbar-nav ml-auto">
+	          <li class="nav-item active"><a href="{% url 'irish:index' %}" class="nav-link">Home</a></li>
+	          <li class="nav-item"><a href="{% url 'irish:shop' %}" class="nav-link">Shop</a></li>
+			  {% if request.user.is_authenticated %}
+			  <li class="nav-item"><a href="{% url 'irish:logout' %}" class="nav-link">{{request.user}}</a></li>
+			  {% else %}
+	          <li class="nav-item"><a href="{% url 'irish:login' %}" class="nav-link">Login</a></li>
+	          <li class="nav-item"><a href="{% url 'irish:register' %}" class="nav-link">Register</a></li>
+			  {% endif %}
+	          <li class="nav-item cta cta-colored"><a href="{% url 'irish:cart' %}" class="nav-link"><span class="icon-shopping_cart"></span>[<i class='cart'>{{cart}}</i>]</a></li>
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+    <!-- END nav -->
+
+    <section id="home-section" class="hero">
+		  <div class="home-slider owl-carousel">
+	      <div class="slider-item js-fullheight">
+	      	<div class="overlay"></div>
+	        <div class="container-fluid p-0">
+	          <div class="row d-md-flex no-gutters slider-text align-items-center justify-content-end" data-scrollax-parent="true">
+	          	<img class="one-third order-md-last img-fluid" src="{% static 'irish/images/unnamed.jpg' %}" alt="">
+		          <div class="one-forth d-flex align-items-center ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
+		          	<div class="text">
+		          		<span class="subheading">Vegetables</span>
+		          		<div class="horizontal">
+				            <h1 class="mb-4 mt-3">Foreign Pepper</h1>
+				            <p class="mb-4">Fresh from the farm.</p>
+				            
+				            <p><a href="{% url 'irish:index' %}" class="btn-custom">Discover more</a></p>
+				          </div>
+		            </div>
+		          </div>
+	        	</div>
+	        </div>
+	      </div>
+
+	      <div class="slider-item js-fullheight">
+	      	<div class="overlay"></div>
+	        <div class="container-fluid p-0">
+	          <div class="row d-flex no-gutters slider-text align-items-center justify-content-end" data-scrollax-parent="true">
+	          	<img class="one-third order-md-last img-fluid" src="{% static 'irish/images/images2.jpeg' %}" alt="">
+		          <div class="one-forth d-flex align-items-center ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
+		          	<div class="text">
+		          		<span class="subheading">Rice</span>
+		          		<div class="horizontal">
+				            <h1 class="mb-4 mt-3">Stone free and sweet</h1>
+				            <p class="mb-4">Stone free and sweet 50kg Nigerian rice.</p>
+				            
+				            <p><a href="{% url 'irish:index' %}" class="btn-custom">Discover more</a></p>
+				          </div>
+		            </div>
+		          </div>
+	        	</div>
+	        </div>
+	      </div>
+	    </div>
+    </section>
+
+    <section class="ftco-section ftco-no-pt ftco-no-pb">
+			<div class="container">
+				<div class="row no-gutters ftco-services">
+          <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+            <div class="media block-6 services p-4 py-md-5">
+              <div class="icon d-flex justify-content-center align-items-center mb-4">
+            		<span class="flaticon-bag"></span>
+              </div>
+              <div class="media-body">
+                <h3 class="heading">Shipping</h3>
+                <p>Our shipping fee has been reduced to almost nothing. Buy today and allow us worry about the safe delivery of your order.</p>
+              </div>
+            </div>      
+          </div>
+          <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+            <div class="media block-6 services p-4 py-md-5">
+              <div class="icon d-flex justify-content-center align-items-center mb-4">
+            		<span class="flaticon-customer-service"></span>
+              </div>
+              <div class="media-body">
+                <h3 class="heading">Support Customer</h3>
+                <p>We offer 247 customer suppoer on out hotline; +234(0)8164383860</p>
+              </div>
+            </div>    
+          </div>
+          <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+            <div class="media block-6 services p-4 py-md-5">
+              <div class="icon d-flex justify-content-center align-items-center mb-4">
+            		<span class="flaticon-payment-security"></span>
+              </div>
+              <div class="media-body">
+                <h3 class="heading">Secure Payments</h3>
+                <p>Our payment systems are secured to a fault. Your details remain private to only you.</p>
+              </div>
+            </div>      
+          </div>
+        </div>
+			</div>
+		</section>
+
+    <section class="ftco-section bg-light">
+    	<div class="container">
+				<div class="row justify-content-center mb-3 pb-3">
+          <div class="col-md-12 heading-section text-center ftco-animate">
+            <h2 class="mb-4">Top Deals</h2>
+          </div>
+        </div>   		
+    	</div>
+    	<div class="container">
+    		<div class="row">
+				{% if products %}
+				{% for product in products %}
+					<div class="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+						<div class="product d-flex flex-column" style="box-shadow: 5px 5px 10px;">
+							<a href="{% url 'irish:single' product.prodid %}" class="img-prod"><img class="img-fluid" src="{{product.image.url}}" alt="Colorlib Template">
+								<div class="overlay"></div>
+							</a>
+							<div class="text py-3 pb-4 px-3">
+								<h3><a id="name" href="#">{{product.name}}</a></h3>
+								<div class="pricing">
+									<p class="price"><del>N</del><span class="pricee">{{product.price}}</span></p>
+								</div>
+								<p class="bottom-area d-flex px-3">
+									<a type="button" id="but" class="add-to-cart text-center py-2 mr-1 but"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+									<a type="button" id="but1" class="but1 buy-now text-center py-2"><span>Buy now<i class="ion-ios-cart ml-1"></i></span></a>
+
+								</p>
+								<p id="pid" style="display:none">{{product.prodid}}</p>
+							</div>
+						</div>
+					</div>
+    			{% endfor %}
+				{% endif %}
+    		</div>
+    	</div>
+    </section>
+
+    <!--<section class="ftco-section ftco-choose ftco-no-pb ftco-no-pt">
+    	<div class="container">
+				<div class="row no-gutters">
+					<div class="col-lg-4">
+						<div class="choose-wrap divider-one img p-5 d-flex align-items-end" style="background-image: url({% static 'irish/images/choose-1.jpg' %});">
+
+    					<div class="text text-center text-white px-2">
+								<span class="subheading">Men's Shoes</span>
+    						<h2>Men's Collection</h2>
+    						<p>Our supreme and bold collection for kings and princes.</p>
+    						<p><a href="shop.php" class="btn btn-black px-3 py-2">Shop now</a></p>
+    					</div>
+    				</div>
+					</div>
+					<div class="col-lg-8">
+    				<div class="row no-gutters choose-wrap divider-two align-items-stretch">
+    					<div class="col-md-12">
+	    					<div class="choose-wrap full-wrap img align-self-stretch d-flex align-item-center justify-content-end" style="background-image: url({% static 'irish/images/choose-2.jpg' %});">
+	    						<div class="col-md-7 d-flex align-items-center">
+	    							<div class="text text-white px-5">
+	    								<span class="subheading">Women's Shoes</span>
+			    						<h2>Women's Collection</h2>
+			    						<p>A queen should walk like a queen. Let us make those steps on marble.</p>
+			    						<p><a href="shop.php" class="btn btn-black px-3 py-2">Shop now</a></p>
+			    					</div>
+	    						</div>
+	    					</div>
+	    				</div>
+    					<div class="col-md-12">
+    						<div class="row no-gutters">
+    							<div class="col-md-6">
+		    						<div class="choose-wrap wrap img align-self-stretch bg-light d-flex align-items-center">
+		    							<div class="text text-center px-5">
+		    								<span class="subheading">Harmattan Sale</span>
+				    						<h2>Extra 20% Off</h2>
+				    						<p>Our harmattan sales will cost you less for an inspiring walk to Christmas and New Year celebration.</p>
+				    						<p><a href="shop.php" class="btn btn-black px-3 py-2">Shop now</a></p>
+				    					</div>
+		    						</div>
+	    						</div>
+	    						<div class="col-md-6">
+		    						<div class="choose-wrap wrap img align-self-stretch d-flex align-items-center" style="background-image: url({% static 'irish/images/choose-3.jpg' %});">
+		    							<div class="text text-center text-white px-5">
+		    								<span class="subheading">Shoes</span>
+				    						<h2>Best Sellers</h2>
+				    						<p>Our shoes have proven and stood against the test of both time and harsh weather.</p>
+				    						<p><a href="shop.php" class="btn btn-black px-3 py-2">Shop now</a></p>
+				    					</div>
+		    						</div>
+	    						</div>
+	    					</div>
+    					</div>
+    				</div>
+    			</div>
+  			</div>
+    	</div>
+    </section>-->
+
+    <!--<section class="ftco-section ftco-deal bg-primary">
+    	<div class="container">
+    		<div class="row">
+    			<div class="col-md-6">
+    				<img src="{% static 'irish/images/prod-1.png' %}" class="img-fluid" alt="">
+    			</div>
+    			<div class="col-md-6">
+    				<div class="heading-section heading-section-white">
+    					<span class="subheading">Deal of the month</span>
+						<h2 class="mb-3">Deal of the month</h2>
+					</div>
+    				<div id="timer" class="d-flex mb-4">
+						<div class="time" id="days"></div>
+						<div class="time pl-4" id="hours"></div>
+						<div class="time pl-4" id="minutes"></div>
+						<div class="time pl-4" id="seconds"></div>
+					</div>
+						<div class="text-deal">
+							<h2><a href="#">Nike Free RN 2019 iD</a></h2>
+							<p class="price"><span class="mr-2 price-dc">$120.00</span><span class="price-sale">$80.00</span></p>
+							<ul class="thumb-deal d-flex mt-4">
+								<li class="img" style="background-image: url({% static 'irish/images/product-6.png' %});"></li>
+								<li class="img" style="background-image: url({% static 'irish/images/product-2.png' %});"></li>
+								<li class="img" style="background-image: url({% static 'irish/images/product-4.png' %});"></li>
+							</ul>
+						</div>
+    			</div>
+    		</div>
+    	</div>
+    </section>-->
+
+    <section class="ftco-gallery">
+    	<div class="container">
+    		<div class="row justify-content-center">
+    			<div class="col-md-8 heading-section text-center mb-4 ftco-animate">
+            <h2 class="mb-4">In Stock</h2>
+          </div>
+    		</div>
+    	</div>
+    	<div class="container-fluid px-0">
+    		<div class="row no-gutters">
+					<div class="col-md-4 col-lg-2 ftco-animate">
+						<a href="{% static 'irish/images/unnamed.jpg' %}" class="gallery image-popup img d-flex align-items-center" style="background-image: url({% static 'irish/images/unnamed.jpg' %});">
+							<div class="icon mb-4 d-flex align-items-center justify-content-center">
+    						<span class="icon-instagram"></span>
+    					</div>
+						</a>
+					</div>
+					<div class="col-md-4 col-lg-2 ftco-animate">
+						<a href="{% static 'irish/images/images1.jpeg' %}" class="gallery image-popup img d-flex align-items-center" style="background-image: url({% static 'irish/images/images1.jpeg' %});">
+							<div class="icon mb-4 d-flex align-items-center justify-content-center">
+    						<span class="icon-instagram"></span>
+    					</div>
+						</a>
+					</div>
+					<div class="col-md-4 col-lg-2 ftco-animate">
+						<a href="{% static 'irish/images/images2.jpeg' %}" class="gallery image-popup img d-flex align-items-center" style="background-image: url({% static 'irish/images/images2.jpeg' %});">
+							<div class="icon mb-4 d-flex align-items-center justify-content-center">
+    						<span class="icon-instagram"></span>
+    					</div>
+						</a>
+					</div>
+					<div class="col-md-4 col-lg-2 ftco-animate">
+						<a href="{% static 'irish/images/images3.jpeg' %}" class="gallery image-popup img d-flex align-items-center" style="background-image: url({% static 'irish/images/images3.jpeg' %});">
+							<div class="icon mb-4 d-flex align-items-center justify-content-center">
+    						<span class="icon-instagram"></span>
+    					</div>
+						</a>
+					</div>
+					<div class="col-md-4 col-lg-2 ftco-animate">
+						<a href="{% static 'irish/images/images4.jpeg' %}" class="gallery image-popup img d-flex align-items-center" style="background-image: url({% static 'irish/images/images4.jpeg' %});">
+							<div class="icon mb-4 d-flex align-items-center justify-content-center">
+    						<span class="icon-instagram"></span>
+    					</div>
+						</a>
+					</div>
+					<div class="col-md-4 col-lg-2 ftco-animate">
+						<a href="{% static 'irish/images/toma2.jpg' %}" class="gallery image-popup img d-flex align-items-center" style="background-image: url({% static 'irish/images/toma2.jpg' %});">
+							<div class="icon mb-4 d-flex align-items-center justify-content-center">
+    						<span class="icon-instagram"></span>
+    					</div>
+						</a>
+					</div>
+        	</div>
+    	</div>
+    </section>
+
+    <footer class="ftco-footer ftco-section">
+      <div class="container">
+      	<div class="row">
+      		<div class="mouse">
+						<a href="#" class="mouse-icon">
+							<div class="mouse-wheel"><span class="ion-ios-arrow-up"></span></div>
+						</a>
+					</div>
+      	</div>
+        <div class="row mb-5">
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">I-rish</h2>
+              <p>Your one stop shop for every grocery you will ever need.</p>
+              <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4 ml-md-5">
+              <h2 class="ftco-heading-2">Menu</h2>
+              <ul class="list-unstyled">
+                <li><a href="{% url 'irish:index' %}" class="py-2 d-block">Home</a></li>
+                <li><a href="{% url 'irish:shop' %}" class="py-2 d-block">Shop</a></li>
+                <li><a href="{% url 'irish:cart' %}" class="py-2 d-block">Cart</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+            	<h2 class="ftco-heading-2">Have a Question?</h2>
+            	<div class="block-23 mb-3">
+	              <ul>
+	                <li><a><span class="icon icon-map-marker"></span><span class="text">78 Royce Road, Owerri, Imo State, Nigeria.</span></a></li>
+	                <li><a><span class="icon icon-phone"></span><span class="text">+234 816 4383 680</span></a></li>
+	                <li><a><span class="icon icon-envelope"></span><span class="text">ugahchymdy@gmail.com</span></a></li>
+	              </ul>
+	            </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-center">
+
+            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+			  I-rish &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | <a href="https://colorlib.com">Colorlib</a>
+			</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+  
+
+  <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+
+  <script src="{% static 'irish/js/jquery.min.js' %}"></script>
+  <script src="{% static 'irish/js/jquery-migrate-3.0.1.min.js' %}"></script>
+  <script src="{% static 'irish/js/popper.min.js' %}"></script>
+  <script src="{% static 'irish/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'irish/js/jquery.easing.1.3.js' %}"></script>
+  <script src="{% static 'irish/js/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static 'irish/js/jquery.stellar.min.js' %}"></script>
+  <script src="{% static 'irish/js/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'irish/js/jquery.magnific-popup.min.js' %}"></script>
+  <script src="{% static 'irish/js/aos.js' %}"></script>
+  <script src="{% static 'irish/js/jquery.animateNumber.min.js' %}"></script>
+  <script src="{% static 'irish/js/bootstrap-datepicker.js' %}"></script>
+  <script src="{% static 'irish/js/scrollax.min.js' %}"></script>
+  <script src="{% static 'irish/js/main.js' %}"></script>
+  <script>
+	$(document).ready(function(){
+		$(".but").click(function(){
+			var pid = $(this).parent().next().html();
+			var price = $(this).parent().prev().find(".pricee").html();
+			var name = $(this).parent().prev().prev().find("a").html();
+			var cart = '{{ pet }}';
+			var csr = '{{ csrf_token }}';
+			$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, price:price, pid:pid, csrfmiddlewaretoken:csr }, function(data){
+				$('.cart').html(data);
+			});
+		});
+		$(".but1").click(function(){
+			var pid = $(this).parent().next().html();
+			var price = $(this).parent().prev().find(".pricee").html();
+			var name = $(this).parent().prev().prev().find("a").html();
+			var cart = '{{pet}}';
+			var csr = '{{ csrf_token }}';
+			$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, price:price, pid:pid, csrfmiddlewaretoken:csr }, function(data){
+				location.assign("{% url 'irish:cart' %}");
+			});
+	  });
+	});
+  </script>
+  </body>
+</html>

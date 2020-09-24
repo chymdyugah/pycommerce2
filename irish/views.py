@@ -7,32 +7,115 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import LogoutView
 import random
 from pycommerce.settings import LOGIN_REDIRECT_URL
-from .models import Product, Cart
+from .models import Product, Cart, Shipment
 from .forms import LoginForm, RegistrationForm
 from django.db.models import Sum
+import datetime
 
 # Create your views here.
 
 
 class Index(generic.ListView):
-	template_name = 'irish/index2.html'
+	template_name = 'irish/index.html'
 
 	def get(self, request, *args, **kwargs):
-		if not request.session.has_key('id'):
+		if 'id' not in request.session:
 			request.session['id'] = random.randint(999, 9999999)
+			request.session['id'] = hash(datetime.datetime.now())
 
-		products = Product.objects.all()
+		products = Product.objects.all()[0:12]
 		cart = Cart.objects.filter(cart_id=request.session['id'], status='').count()
 		pet = request.session['id']
 		return render(request, self.template_name, {'products': products, 'cart': cart, 'pet': pet})
 
 
-class CartView(generic.ListView):
-	template_name = 'irish/cart2.html'
+class Shop(generic.ListView):
+	template_name = 'irish/shop.html'
 
 	def get(self, request, *args, **kwargs):
-		if not request.session.has_key('id'):
+		if 'id' not in request.session:
 			request.session['id'] = random.randint(999, 9999999)
+			request.session['id'] = hash(datetime.datetime.now())
+			products_per_page = 1  # change this variable to set the number of items in page
+
+		if 'p1' in request.GET:
+			if 'n' in request.GET:
+				n = int(request.GET['n'])
+				start_prod = n * products_per_page - products_per_page
+				end_prod = n * products_per_page
+
+				products = Product.objects.filter(price__gte=request.GET['p1'], price__lte=request.GET['p2'])[start_prod:end_prod]
+			else:
+				n = 1
+				products = Product.objects.filter(price__gte=request.GET['p1'], price__lte=request.GET['p2'])[0:products_per_page]
+		else:
+			if 'n' in request.GET:
+				n = int(request.GET['n'])
+				start_prod = n * products_per_page - products_per_page
+				end_prod = n * products_per_page
+				products = Product.objects.all()[start_prod:end_prod]
+			else:
+				n = 1
+				products = Product.objects.all()[0:products_per_page]
+		if 'desc' in request.GET:
+			products = Product.objects.filter(description__contains=request.GET['desc'])[0:products_per_page]
+			if 'n' in request.GET:
+				n = int(request.GET['n'])
+				start_prod = n * products_per_page - products_per_page
+				end_prod = n * products_per_page
+				products = Product.objects.filter(description__contains=request.GET['desc'])[start_prod:end_prod]
+
+		cart = Cart.objects.filter(cart_id=request.session['id'], status='').count()
+		pet = request.session['id']
+		if len(products) == 0:
+			return render(request, self.template_name, {'err': 'No more Product'})
+
+		return render(request, self.template_name, {'products': products, 'cart': cart, 'pet': pet, 'nxt': n+1, 'prv': n-1})
+
+
+class Category(generic.ListView):
+	template_name = 'irish/shop.html'
+
+	def get(self, request, cat, *args, **kwargs):
+		if 'id' not in request.session:
+			request.session['id'] = random.randint(999, 9999999)
+			request.session['id'] = hash(datetime.datetime.now())
+			products_per_page = 1
+
+		if 'p1' in request.GET:
+			if 'n' in request.GET:
+				n = int(request.GET['n'])
+				start_prod = n * products_per_page - products_per_page
+				end_prod = n * products_per_page
+				products = Product.objects.filter(price__gte=request.GET['p1'], price__lte=request.GET['p2'], categories__contains=cat)[start_prod:end_prod]
+			else:
+				n = 1
+				products = Product.objects.filter(price__gte=request.GET['p1'], price__lte=request.GET['p2'], categories__contains=cat)[0:products_per_page]
+		else:
+			if 'n' in request.GET:
+				n = int(request.GET['n'])
+				start_prod = n * products_per_page - products_per_page
+				end_prod = n * products_per_page
+				products = Product.objects.filter(categories__contains=cat)[start_prod:end_prod]
+			else:
+				n = 1
+				products = Product.objects.filter(categories__contains=cat)[0:products_per_page]
+
+		cart = Cart.objects.filter(cart_id=request.session['id'], status='').count()
+		pet = request.session['id']
+		if len(products) == 0:
+			return render(request, self.template_name, {'err': 'No more Product'})
+
+		return render(request, self.template_name, {'products': products, 'cart': cart, 'pet': pet, 'nxt': n+1, 'prv': n-1})
+
+
+class CartView(generic.ListView):
+	template_name = 'irish/cart.html'
+
+	def get(self, request, *args, **kwargs):
+		if 'id' not in request.session:
+			request.session['id'] = random.randint(999, 9999999)
+			request.session['id'] = hash(datetime.datetime.now())
 
 		pet = request.session['id']
 		products = Cart.objects.filter(cart_id=request.session['id'], status="")
@@ -50,11 +133,12 @@ class CartView(generic.ListView):
 
 @method_decorator(login_required, name='dispatch')
 class Checkout(View):
-	template_name = 'irish/checkout2.html'
+	template_name = 'irish/checkout.html'
 
 	def get(self, request):
-		if not request.session.has_key('id'):
+		if 'id' not in request.session:
 			request.session['id'] = random.randint(999, 9999999)
+			request.session['id'] = hash(datetime.datetime.now())
 
 		pet = request.session['id']
 		products = Cart.objects.filter(cart_id=request.session['id'], status="")
@@ -71,14 +155,15 @@ class Checkout(View):
 
 
 class Single(generic.DetailView):
-	template_name = 'irish/single1.html'
+	template_name = 'irish/single.html'
 	model = Product
 
 	def get(self, request, pk, *args, **kwargs):
-		if not request.session.has_key('id'):
+		if 'id' not in request.session:
 			request.session['id'] = random.randint(999, 9999999)
+			request.session['id'] = hash(datetime.datetime.now())
 		try:
-			prod = Product.objects.get(pk=pk)
+			prod = Product.objects.get(prodid=pk)
 		except Product.DoesNotExist:
 			return redirect('irish:index')
 
@@ -88,7 +173,7 @@ class Single(generic.DetailView):
 
 
 class Login(View):
-	template_name = 'irish/login.html'
+	template_name = 'irish/login3.html'
 	form_class = LoginForm
 
 	def get(self, request):
@@ -116,7 +201,7 @@ class Login(View):
 
 
 class Registration(View):
-	template_name = 'irish/register.html'
+	template_name = 'irish/signup.html'
 	form_class = RegistrationForm
 
 	def get(self, request):
@@ -141,14 +226,6 @@ class Registration(View):
 		return render(request, self.template_name, {'form': form})
 
 
-class Logout(LogoutView):
-	next_page = "irish:index"
-
-	def get(self, request, *args, **kwargs):
-		Cart.objects.filter(cart_id=request.session['id'], status='').delete()
-		return super().get(request)
-
-
 class LogoutV(View):
 	def get(self, request):
 		Cart.objects.filter(cart_id=request.session['id'], status='').delete()
@@ -164,7 +241,7 @@ class AjxView(View):
 			pid = request.GET['serial']
 			quant = int(request.GET['quant'])
 			product = Cart.objects.get(pk=pid)
-			sel_prod = Product.objects.get(pk=product.prodid)
+			sel_prod = Product.objects.get(prodid=product.prodid)
 			price = sel_prod.price
 			total = price * quant
 			product.quantity = quant
@@ -176,6 +253,12 @@ class AjxView(View):
 		if "sn" in request.GET:
 			pid = request.GET['sn']
 			Cart.objects.get(pk=pid).delete()
+
+			return HttpResponse('done')
+
+		if "clear" in request.GET:
+			kart = request.session['id']
+			Cart.objects.filter(cart_id=kart, status='').delete()
 
 			return HttpResponse('done')
 
@@ -200,4 +283,12 @@ class AjxView(View):
 			address = request.POST['address']
 
 			data = Cart.objects.filter(cart_id=cart, status='').update(status='paid')
+			new_shipment = Shipment.objects.create(order=order, address=address, items=items, status='', user=request.user)
+			new_shipment.save()
+			products = Cart.objects.filter(cart_id=request.session['id'], status="")
+			for product in products:
+				p = Product.objects.get(product.prodid)
+				p.quantity -= product.quantity
+				p.save()
+
 			return HttpResponse(data)

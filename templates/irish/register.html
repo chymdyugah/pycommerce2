@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'irish/css/bootstrap2.min.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/font-awesome.min2.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/index.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/w3pro-4.css' %}">
+	<script src="{% static 'irish/js/jquery.min.js' %}"></script>
+	<script src="{% static 'irish/js/bootstrap2.min.js' %}"></script>
+	<title>Irish</title>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-offset-4 col-sm-4">
+				<div class="w3-card" style="width=100%; padding:20px; margin-top:20%;">
+					<h1 class="text-center" style="padding:10px;">I-RISH</h1>
+					<form method="post">
+						{% csrf_token %}
+						{% for field in form %}
+						<div class="form-group">
+							{{field}}
+							<span class='text-danger small'> {{ field.errors }}</span>
+						</div>
+						{% endfor %}
+						<center>
+							<button type="submit" class="btn btn-lg btn-warning" style="margin:20px">Submit</button>
+							<a href="{%url 'irish:login' %}" class="btn btn-lg btn-warning" style="margin:20px">Login</a>
+						</center>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+{% if res %}
+<script>alert('{{res}}');</script>
+{% endif %}
+</html>

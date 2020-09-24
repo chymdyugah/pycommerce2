@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>I-rish</title>
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'irish/css/bootstrap3.min.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/edit.css' %}">
+	<script src="{% static 'irish/js/jquery.min.js' %}"></script>
+	<script src="{% static 'irish/js/bootstrap2.min.js' %}"></script>
+</head>
+<body>
+
+<div class="topnav" id="myTopnav">
+  <a href="{% url 'irish:index' %}" >Home <span class="glyphicon glyphicon-home"></span></a>
+  <a href="{% url 'irish:cart' %}" class="active">Cart <span class="glyphicon glyphicon-shopping-cart"></span><sup class="cart">{{cart}}</sup></a>
+  {% if request.user.is_authenticated %}
+  <a href="{% url 'irish:register' %}">Sign Up <span class="glyphicon glyphicon-ok-sign"></span></a>
+  <a href="{% url 'irish:logout' %}">{{request.user.username.title}} <span class="glyphicon glyphicon-user"></span></a>
+  {% else %}
+  <a href="{% url 'irish:register' %}">Sign Up <span class="glyphicon glyphicon-ok-sign"></span></a>
+  <a href="{% url 'irish:login' %}">Login <span class="glyphicon glyphicon-user"></span></a>
+  {% endif %}
+  <a id="hid" href="{% url 'irish:cart' %}" class="icon"><span class="glyphicon glyphicon-shopping-cart"></span><sup class="cart">{{cart}}</sup></a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="glyphicon glyphicon-menu-hamburger"></i>
+  </a>
+</div>
+
+<br>
+
+
+<div class="ro">
+<br>
+<div class="col-md-11">
+	<button type="button" onclick="klearkart()" class="btn btn-danger em"><b>Empty Cart</b></button>
+	<h2>My Cart ::: <span class="badge cart">{{cart}}</span> Items</h2>
+	<table class="table table-responsive">
+		<tr>
+		<th>name</th>
+		<th>Quantity</th>
+		<th>Total</th>
+		<th>Action</th>
+		</tr>
+
+		{% for product in products %}
+		<tr>
+		 <td><strong>{{product.prod_name}}</strong><p class="hidden">{{product.pk}}</p></td>
+		 <td>
+			<div class="form-group">
+				<input type="number" class="form-control quant" min="1" value="{{product.quantity}}">
+			</div>
+		 </td>
+		 <td><strong class="tot">{{product.total}}</strong></td>
+		 <td>
+			<div class="btn-group">
+				<button type="button" class="c btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+			</div>
+		 </td>
+		</tr>
+		{% endfor %}
+
+	</table>
+
+	<h3 class="total">Total: <del>N</del><span id="tp">{{subtotal}}</span></h3>
+	<br>
+	<form>
+		<center><a type="submit" href="{% url 'irish:checkout' %}" class="btn btn-success"><b>Finalize Purchase</b></a></center>
+	</form>
+	<br>
+</div>
+</div>
+
+<script>
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+  $("#hid").toggleClass(" hidden");
+}
+function klearkart(){
+  var rep = confirm('Are you sure you want to clear your cart?');
+  if (rep == true){
+  	$.get("{% url 'irish:ajx' %}", {clear:"yes"}, function(data){
+		location.reload(true);
+	});
+  }
+}
+</script>
+
+<script>
+	$(document).ready(function(){
+		$(".quant").on("blur change", function(){
+			var quant = $(this).val();
+			var total = $(this).parent().parent().next().find(".tot");
+			var serial = $(this).parent().parent().prev().find("p").html();
+			$.get("{% url 'irish:ajx' %}", {serial:serial, quant:quant}, function(data){
+				total.html(data);
+				//update grand total
+				var g = 0;
+				$(".tot").each(function(){
+					g += parseInt($(this).html());
+				});
+				$("#tp").html(g);
+			});
+
+		});
+
+		$(".c").on("click", function(){
+			var rmv = confirm('Do you really want to remove this item?');
+			if(rmv == true){
+				var serial = $(this).parent().parent().siblings().find("p").html();
+				$.get("{% url 'irish:ajx' %}", {sn:serial}, function(data){
+					location.reload(true);
+				});
+			}
+		});
+
+	});
+</script>
+
+</body>
+</html>
