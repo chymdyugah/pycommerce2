@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.views import LogoutView
 import random
 from pycommerce.settings import LOGIN_REDIRECT_URL
 from .models import Product, Cart, Shipment
@@ -25,8 +24,8 @@ class Index(generic.ListView):
 
 		products = Product.objects.all()[0:12]
 		cart = Cart.objects.filter(cart_id=request.session['id'], status='').count()
-		pet = request.session['id']
-		return render(request, self.template_name, {'products': products, 'cart': cart, 'pet': pet})
+		sess = request.session['id']
+		return render(request, self.template_name, {'products': products, 'cart': cart, 'sess': sess})
 
 
 class Shop(generic.ListView):
@@ -66,11 +65,11 @@ class Shop(generic.ListView):
 				products = Product.objects.filter(description__contains=request.GET['desc'])[start_prod:end_prod]
 
 		cart = Cart.objects.filter(cart_id=request.session['id'], status='').count()
-		pet = request.session['id']
+		sess = request.session['id']
 		if len(products) == 0:
 			return render(request, self.template_name, {'err': 'No more Product'})
 
-		return render(request, self.template_name, {'products': products, 'cart': cart, 'pet': pet, 'nxt': n+1, 'prv': n-1})
+		return render(request, self.template_name, {'products': products, 'cart': cart, 'sess': sess, 'nxt': n+1, 'prv': n-1})
 
 
 class Category(generic.ListView):
@@ -102,11 +101,11 @@ class Category(generic.ListView):
 				products = Product.objects.filter(categories__contains=cat)[0:products_per_page]
 
 		cart = Cart.objects.filter(cart_id=request.session['id'], status='').count()
-		pet = request.session['id']
+		sess = request.session['id']
 		if len(products) == 0:
 			return render(request, self.template_name, {'err': 'No more Product'})
 
-		return render(request, self.template_name, {'products': products, 'cart': cart, 'pet': pet, 'nxt': n+1, 'prv': n-1})
+		return render(request, self.template_name, {'products': products, 'cart': cart, 'sess': sess, 'nxt': n+1, 'prv': n-1})
 
 
 class CartView(generic.ListView):
@@ -117,7 +116,7 @@ class CartView(generic.ListView):
 			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
 
-		pet = request.session['id']
+		sess = request.session['id']
 		products = Cart.objects.filter(cart_id=request.session['id'], status="")
 		cart = Cart.objects.filter(cart_id=request.session['id'], status="").count()
 		subtotal = Cart.objects.filter(cart_id=request.session['id'], status="").aggregate(Sum('total'))
@@ -128,7 +127,7 @@ class CartView(generic.ListView):
 		for product in products:
 			final += product.prod_name+","+str(product.quantity)+";"
 
-		return render(request, self.template_name, {'cart': cart, 'products': products, 'subtotal': subtotal, 'final': final, 'pet': pet})
+		return render(request, self.template_name, {'cart': cart, 'products': products, 'subtotal': subtotal, 'final': final, 'sess': sess})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -140,7 +139,7 @@ class Checkout(View):
 			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
 
-		pet = request.session['id']
+		sess = request.session['id']
 		products = Cart.objects.filter(cart_id=request.session['id'], status="")
 		cart = Cart.objects.filter(cart_id=request.session['id'], status="").count()
 		subtotal = Cart.objects.filter(cart_id=request.session['id'], status="").aggregate(Sum('total'))
@@ -151,7 +150,7 @@ class Checkout(View):
 		for product in products:
 			final += product.prod_name + "," + str(product.quantity) + ";"
 
-		return render(request, self.template_name, {'cart': cart, 'products': products, 'subtotal': subtotal, 'final': final, 'pet': pet})
+		return render(request, self.template_name, {'cart': cart, 'products': products, 'subtotal': subtotal, 'final': final, 'sess': sess})
 
 
 class Single(generic.DetailView):
@@ -168,8 +167,8 @@ class Single(generic.DetailView):
 			return redirect('irish:index')
 
 		cart = Cart.objects.filter(cart_id=request.session['id'], status="").count()
-		pet = request.session['id']
-		return render(request, self.template_name, {'product': prod, 'cart': cart, 'pet': pet})
+		sess = request.session['id']
+		return render(request, self.template_name, {'product': prod, 'cart': cart, 'sess': sess})
 
 
 class Login(View):
@@ -196,8 +195,8 @@ class Login(View):
 					else:
 						return redirect(LOGIN_REDIRECT_URL)
 
-			res = 'Wrong Username or Password'
-		return render(request, self.template_name, {'form': form, 'res': res})
+			err = 'Wrong Username or Password'
+		return render(request, self.template_name, {'form': form, 'err': err})
 
 
 class Registration(View):
@@ -237,6 +236,7 @@ class LogoutV(View):
 class AjxView(View):
 
 	def get(self, request):
+		# change the quantity of a product in cart
 		if 'quant' in request.GET:
 			pid = request.GET['serial']
 			quant = int(request.GET['quant'])
@@ -250,12 +250,14 @@ class AjxView(View):
 
 			return HttpResponse(total)
 
+		# deletes a product from cart
 		if "sn" in request.GET:
 			pid = request.GET['sn']
 			Cart.objects.get(pk=pid).delete()
 
 			return HttpResponse('done')
 
+		# clear cart
 		if "clear" in request.GET:
 			kart = request.session['id']
 			Cart.objects.filter(cart_id=kart, status='').delete()
@@ -263,6 +265,7 @@ class AjxView(View):
 			return HttpResponse('done')
 
 	def post(self, request):
+		# adds a product to cart
 		if 'pid' in request.POST:
 			pid = request.POST['pid']
 			name = request.POST['name']
@@ -275,6 +278,7 @@ class AjxView(View):
 			data = Cart.objects.filter(cart_id=cart).count()
 			return HttpResponse(data)
 
+		# finalizes your order after successful payment and subtracts the quantity of the products from Product
 		if 'up' in request.POST:
 			order = request.POST['order']
 			cart = request.POST['cart']
@@ -285,10 +289,10 @@ class AjxView(View):
 			data = Cart.objects.filter(cart_id=cart, status='').update(status='paid')
 			new_shipment = Shipment.objects.create(order=order, address=address, items=items, status='', user=request.user)
 			new_shipment.save()
-			products = Cart.objects.filter(cart_id=request.session['id'], status="")
-			for product in products:
-				p = Product.objects.get(product.prodid)
-				p.quantity -= product.quantity
-				p.save()
+			carts = Cart.objects.filter(cart_id=request.session['id'], status="")
+			for product in carts:
+				sel_prod = Product.objects.get(product.prodid)
+				sel_prod.quantity -= product.quantity
+				sel_prod.save()
 
 			return HttpResponse(data)

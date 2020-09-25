@@ -9,6 +9,7 @@ from .models import Refill
 from irish.models import Product, Cart, Shipment
 from django.db.models import Sum
 import datetime
+import re
 
 
 # Create your views here.
@@ -36,7 +37,7 @@ class Login(generic.View):
 					else:
 						return redirect('adumin:index')
 
-			err = "Invalid username or Password"
+		err = "Invalid username or Password"
 		return render(request, self.template_name, {'form': form, 'err': err})
 
 
@@ -56,13 +57,22 @@ class Registration(generic.View):
 
 	def post(self, request):
 		form = self.form_class(request.POST)
+		regex = re.compile('/\W+/')
 
 		if form.is_valid():
 			user = form.save(commit=False)
 			username = form.cleaned_data['username']
 			password = form.cleaned_data['password']
+			first_name = form.cleaned_data['first_name']
+			last_name = form.cleaned_data['last_name']
+
+			# validate the username, fname and lname to check if they contain characters that is not alphanumeric or _
+			if regex.search(username) or regex.search(first_name) or regex.search(last_name) is not None:
+				err = "Do not include any non word characters"
+				return render(request, self.template_name, {'form': form, 'err': err})
+
 			user.set_password(password)
-			user.is_staff = True
+			user.is_staff = True  # only staffs are allowed to login
 			user.save()
 
 			user = authenticate(username=username, password=password)
@@ -73,7 +83,7 @@ class Registration(generic.View):
 		return render(request, self.template_name, {'form': form})
 
 
-@method_decorator(login_required(login_url='/adumin/login/'), name='dispatch',)
+@method_decorator(login_required(login_url='/adumin/login/'), name='dispatch')
 class Index(generic.View):
 	template_name = 'adumin/index.html'
 
@@ -124,7 +134,7 @@ class RefillView(generic.View):
 			description = request.POST['desc']
 			categories = request.POST['tag']
 			image = request.FILES['image']
-			prodid = 'prod'+ str(hash(datetime.datetime.now()))
+			prodid = 'prod' + str(hash(datetime.datetime.now()))
 
 			new_product = Product.objects.create(prodid=prodid, name=name, price=price, description=description, categories=categories, image=image)
 			new_product.save()
@@ -171,6 +181,7 @@ class InventCharts(generic.View):
 
 class Ajx(generic.View):
 	def get(self, request):
+		# mark an order as shipped
 		if 'q' in request.GET:
 			try:
 				shipment = Shipment.objects.get(pk=request.GET['q'])
@@ -182,9 +193,10 @@ class Ajx(generic.View):
 				return HttpResponse("<script>location.replace('/adumin/redr/')</script>")
 
 	def post(self, request):
+		# select date range and send back products sold during that range
 		if 'dat1' in request.POST:
 			dat1 = request.POST['dat1']
 			dat2 = request.POST['dat2']
 			selection = Cart.objects.filter(status='paid', date__gte=dat1, date__lte=dat2).values('prod_name').annotate(quant=Sum('quantity'))
-			c = [{'prod_name': s['prod_name'], 'quant': s['quant']} for s in selection]
-			return JsonResponse(c, safe=False)
+			response = [{'prod_name': prod['prod_name'], 'quant': prod['quant']} for prod in selection]
+			return JsonResponse(response, safe=False)

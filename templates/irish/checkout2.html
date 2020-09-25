@@ -133,7 +133,7 @@
 				var mail = '{{ request.user.email }}';
 				var add = $("#address").val();
 				var csr = '{{csrf_token}}';
-				var cart = '{{pet}}';
+				var cart = '{{sess}}';
 				$.post("{% url 'irish:ajx' %}", {up:'response', cart:cart, order:response.reference, address:add, items:desc, email:mail, csrfmiddlewaretoken:csr }, function(data){
 					alert("Payment complete! order ID: " + response.reference + "\nCopy your order ID as it would be used for tracking your shipment.");
 					location.assign("{% url 'irish:index' %}");

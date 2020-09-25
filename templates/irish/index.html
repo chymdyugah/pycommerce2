@@ -423,7 +423,7 @@
 			var pid = $(this).parent().next().html();
 			var price = $(this).parent().prev().find(".pricee").html();
 			var name = $(this).parent().prev().prev().find("a").html();
-			var cart = '{{ pet }}';
+			var cart = '{{ sess }}';
 			var csr = '{{ csrf_token }}';
 			$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, price:price, pid:pid, csrfmiddlewaretoken:csr }, function(data){
 				$('.cart').html(data);
@@ -433,7 +433,7 @@
 			var pid = $(this).parent().next().html();
 			var price = $(this).parent().prev().find(".pricee").html();
 			var name = $(this).parent().prev().prev().find("a").html();
-			var cart = '{{pet}}';
+			var cart = '{{sess}}';
 			var csr = '{{ csrf_token }}';
 			$.post("{% url 'irish:ajx' %}", {name:name, cart:cart, price:price, pid:pid, csrfmiddlewaretoken:csr }, function(data){
 				location.assign("{% url 'irish:cart' %}");

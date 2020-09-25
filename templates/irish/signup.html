@@ -54,6 +54,7 @@
 
 	  {% for field in form %}
 	  {{field}}<br>
+	  <span class="text-danger">{{field.error}}</span>
 	  {% endfor %}
 	  	  
 	  <button name="sub" type="submit" data-role="none" class="btn btn-info login-btn btn-block">Sign Up <span class="glyphicon glyphicon-ok-sign"></span></button><br>

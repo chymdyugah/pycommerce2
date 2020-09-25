@@ -1,3 +1,7 @@
+{% if err %}
+<script>alert('{{err}}');</script>
+{% endif %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,6 +58,7 @@
 
 	 {% for field in form %}
 	 	{{field}}<br>
+	    <span class="text-danger">{{field.error}}</span>
   	 {% endfor %}
 	  	  
 	  <button name="sub"  class="btn btn-info login-btn btn-block">Login <span class="glyphicon glyphicon-user"></span></button><br>
