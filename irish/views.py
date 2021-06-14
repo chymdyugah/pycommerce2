@@ -35,7 +35,8 @@ class Shop(generic.ListView):
 		if 'id' not in request.session:
 			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
-			products_per_page = 1  # change this variable to set the number of items in page
+
+		products_per_page = 3  # change this variable to set the number of items in page
 
 		if 'p1' in request.GET:
 			if 'n' in request.GET:
@@ -75,11 +76,12 @@ class Shop(generic.ListView):
 class Category(generic.ListView):
 	template_name = 'irish/shop.html'
 
-	def get(self, request, cat, *args, **kwargs):
+	def get(self, request, cat):
 		if 'id' not in request.session:
 			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
-			products_per_page = 1
+
+		products_per_page = 1
 
 		if 'p1' in request.GET:
 			if 'n' in request.GET:
