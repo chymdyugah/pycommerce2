@@ -7,6 +7,7 @@
 	{% load staticfiles %}
 	<link rel="stylesheet" href="{% static 'irish/css/bootstrap3.min.css' %}">
 	<link rel="stylesheet" href="{% static 'irish/css/edit.css' %}">
+	<link rel="stylesheet" href="{% static 'irish/css/font-awesome.min.css' %}">
 	<script src="{% static 'irish/js/jquery.min.js' %}"></script>
 	<script src="{% static 'irish/js/bootstrap2.min.js' %}"></script>
 </head>
@@ -40,9 +41,8 @@
 </div>
 <br>
  <div class="ro">
- <div class="col-md-4"></div>
 
-<div class="col-md-4 login-form" style="box-shadow: 5px 5px 10px;">
+<div class="col-md-offset-4 col-md-4 login-form" style="box-shadow: 5px 5px 10px;">
 	 
 	  <center>
       
@@ -62,7 +62,21 @@
 	  
 	  
     </form>
-	  </center>
+	  </center><br>
+	<p><strong>-- OR --</strong></p>
+
+	<div class="row">
+		<div class="col-md-4 form-group">
+			<a href="{% url 'social:begin' 'github' %}" class="btn btn-default btn-block"><span class="fa fa-github"></span>&nbsp;Github</a>
+		</div>
+		<div class="col-md-4 form-group">
+			<a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-danger btn-block"><span class="fa fa-google"></span>&nbsp;Google</a>
+		</div>
+		<div class="col-md-4 form-group">
+			<a href="{% url 'social:begin' 'facebook' %}" class="btn btn-primary btn-block"><span class="fa fa-facebook"></span>&nbsp;Facebook</a>
+		</div>
+	</div>
+
 	</div></div><br><br><br><br><br><br>
 
 
