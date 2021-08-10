@@ -19,7 +19,6 @@ class Index(generic.ListView):
 
 	def get(self, request, *args, **kwargs):
 		if 'id' not in request.session:
-			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
 
 		products = Product.objects.all()[0:12]
@@ -33,7 +32,6 @@ class Shop(generic.ListView):
 
 	def get(self, request, *args, **kwargs):
 		if 'id' not in request.session:
-			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
 
 		products_per_page = 3  # change this variable to set the number of items in page
@@ -76,9 +74,9 @@ class Shop(generic.ListView):
 class Category(generic.ListView):
 	template_name = 'irish/shop.html'
 
-	def get(self, request, cat):
+	def get(self, request, *args, **kwargs):
+		cat = kwargs.get('cat')
 		if 'id' not in request.session:
-			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
 
 		products_per_page = 1
@@ -115,7 +113,6 @@ class CartView(generic.ListView):
 
 	def get(self, request, *args, **kwargs):
 		if 'id' not in request.session:
-			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
 
 		sess = request.session['id']
@@ -138,7 +135,6 @@ class Checkout(View):
 
 	def get(self, request):
 		if 'id' not in request.session:
-			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
 
 		sess = request.session['id']
@@ -159,12 +155,12 @@ class Single(generic.DetailView):
 	template_name = 'irish/single.html'
 	model = Product
 
-	def get(self, request, pk, *args, **kwargs):
+	def get(self, request, *args, **kwargs):
 		if 'id' not in request.session:
-			request.session['id'] = random.randint(999, 9999999)
 			request.session['id'] = hash(datetime.datetime.now())
+
 		try:
-			prod = Product.objects.get(prodid=pk)
+			prod = self.get_object()
 		except Product.DoesNotExist:
 			return redirect('irish:index')
 
@@ -178,6 +174,9 @@ class Login(View):
 	form_class = LoginForm
 
 	def get(self, request):
+		if 'id' not in request.session:
+			request.session['id'] = hash(datetime.datetime.now())
+
 		form = self.form_class(None)
 		return render(request, self.template_name, {'form': form})
 
